@@ -12,6 +12,8 @@ import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
 import org.example.bowling.services.ScoreService;
 
+import com.google.common.annotations.VisibleForTesting;
+
 
 /**
  * {@link ScoreService}'s implementation
@@ -32,8 +34,9 @@ public class ScoreServiceImpl implements ScoreService {
             roundByPlayer.putIfAbsent(currentPlayer, new ArrayList<>());
 
             // if the current player is not equals to the last player, we need to create a new round instead of updating
-            // the same one
-            if (!currentPlayer.equals(lastPlayer)) {
+            // the same one. Of if it had it's two chances already, unless it's the last one and it's a strike
+            if (!currentPlayer.equals(lastPlayer) || (lastRound.getPinsKnocked().size() > 2 && !lastRound.isStrike()
+                    && roundByPlayer.get(currentPlayer).size() != 10)) {
                 lastRound = new Round();
                 lastPlayer = currentPlayer;
                 newRound = true;
@@ -44,6 +47,7 @@ public class ScoreServiceImpl implements ScoreService {
             if (newRound) {
                 roundByPlayer.get(currentPlayer).add(lastRound);
             }
+            this.validateRounds(lastRound, currentPlayer.getName(), roundByPlayer.get(currentPlayer).size());
         }
         return roundByPlayer;
     }
@@ -58,7 +62,8 @@ public class ScoreServiceImpl implements ScoreService {
      * Update each {@link Round#getRoundScore()}
      * @param rounds rounds to be updated
      */
-    private void updateRoundScore(List<Round> rounds) {
+    @VisibleForTesting
+    void updateRoundScore(List<Round> rounds) {
         AtomicReference<Round> lastRoundAtomicReference = new AtomicReference<>();
         AtomicReference<Round> lastButOneRoundAtomicReference = new AtomicReference<>();
         Collections.reverse(rounds);
@@ -97,7 +102,8 @@ public class ScoreServiceImpl implements ScoreService {
      * Update each {@link Round#getCumulativeScore()}
      * @param rounds rounds to be updated
      */
-    private void updateCumulativeScore(List<Round> rounds) {
+    @VisibleForTesting
+    void updateCumulativeScore(List<Round> rounds) {
         AtomicReference<Round> lastRoundAtomicReference = new AtomicReference<>();
         rounds.forEach(currentRound -> {
             Round lastRound = lastRoundAtomicReference.get();
@@ -107,5 +113,26 @@ public class ScoreServiceImpl implements ScoreService {
             }
             lastRoundAtomicReference.set(currentRound);
         });
+    }
+
+    /**
+     * Validate each {@link Round} to be sure it doesn't have any invalid input, as negative number of pins knocked or
+     * more than 10, unless it's the last round and it's a strike. Or if there are more than 10 throws per player.
+     * @param round round to be validated
+     * @param playerName player name
+     * @param frame number of frame
+     */
+    @VisibleForTesting
+    void validateRounds(Round round, String playerName, int frame) {
+        List<Integer> pinsKnocked = round.getPinsKnockedAsInteger();
+        Integer totalPins = pinsKnocked.stream().reduce(0, Integer::sum);
+        if (totalPins < 0 || (totalPins > 10 && (frame != 10 || !round.isStrike() || pinsKnocked.size() != 3))) {
+            throw new RuntimeException(String.format(
+                    "The input file contains a invalid number of %s pins knocked in one round for player %s", totalPins,
+                    playerName));
+        } else if (frame > 10) {
+            throw new RuntimeException(String.format(
+                    "The input file contains more than 10 throws for player %s", playerName));
+        }
     }
 }

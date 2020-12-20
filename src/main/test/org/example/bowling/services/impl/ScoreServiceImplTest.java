@@ -24,6 +24,49 @@ public class ScoreServiceImplTest {
     private ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
     @Test
+    public void validateRoundsTest$simpleTestEverythingIsValid() {
+        Round round = new Round();
+        round.setPinsKnocked(Arrays.asList("5", "5"));
+        this.scoreService.validateRounds(round, "playerName", 1);
+    }
+
+    @Test
+    public void validateRoundsTest$simpleTestInvalidKnockedPins11() {
+        Round round = new Round();
+        round.setPinsKnocked(Arrays.asList("6", "5"));
+        Assertions.assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
+    }
+
+    @Test
+    public void validateRoundsTest$simpleTestInvalidKnockedPinsMinus1() {
+        Round round = new Round();
+        round.setPinsKnocked(Collections.singletonList("-1"));
+        Assertions.assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
+    }
+
+    @Test
+    public void validateRoundsTest$simpleTestMoreThan10PinsKnockedStrikeOnLastFrame() {
+        Round round = new Round();
+        round.setPinsKnocked(Arrays.asList("10", "1", "1"));
+        this.scoreService.validateRounds(round, "playerName", 10);
+    }
+
+    @Test
+    public void validateRoundsTest$simpleTestMoreThan10PinsKnockedStrikeNotLastFrame() {
+        Round round = new Round();
+        round.setPinsKnocked(Arrays.asList("10", "1", "1"));
+        Assertions.assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
+    }
+
+    @Test
+    public void validateRoundsTest$simpleTestMoreThan10Frames() {
+        Round round = new Round();
+        round.setPinsKnocked(Collections.singletonList("1"));
+        Assertions
+                .assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 11));
+    }
+
+    @Test
     public void updateCumulativeScore$simpleTest() {
         Round round1 = new Round();
         round1.setRoundScore(10);
