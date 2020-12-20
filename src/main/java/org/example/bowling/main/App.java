@@ -30,6 +30,7 @@ public class App {
             List<String> lines = FileUtils.openFileAndReadLines(arguments.get(ArgumentsUtils.FILE_NAME));
             Map<Player, List<Round>> roundByPlayer = scoreService.parseRoundsByPlayer(lines, arguments.get(
                     ArgumentsUtils.VALUE_SEPARATOR));
+            roundByPlayer.values().forEach(scoreService::updateRoundsSetScore);
         } catch (IOException e) {
             e.printStackTrace();
         }

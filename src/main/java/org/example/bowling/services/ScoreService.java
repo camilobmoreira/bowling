@@ -25,4 +25,10 @@ public interface ScoreService {
      */
     Map<Player, List<Round>> parseRoundsByPlayer(List<String> lines, String separator);
 
+    /**
+     * Given a {@link List} of {@link Round}, it will update each elemnt {@link Round#getRoundScore()} and
+     * {@link Round#getCumulativeScore()}
+     * @param rounds rounds to be updated
+     */
+    void updateRoundsSetScore(List<Round> rounds);
 }

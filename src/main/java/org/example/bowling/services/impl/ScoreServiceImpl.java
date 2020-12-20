@@ -48,4 +48,64 @@ public class ScoreServiceImpl implements ScoreService {
         return roundByPlayer;
     }
 
+    @Override
+    public void updateRoundsSetScore(List<Round> rounds) {
+        this.updateRoundScore(rounds);
+        this.updateCumulativeScore(rounds);
+    }
+
+    /**
+     * Update each {@link Round#getRoundScore()}
+     * @param rounds rounds to be updated
+     */
+    private void updateRoundScore(List<Round> rounds) {
+        AtomicReference<Round> lastRoundAtomicReference = new AtomicReference<>();
+        AtomicReference<Round> lastButOneRoundAtomicReference = new AtomicReference<>();
+        Collections.reverse(rounds);
+        rounds.forEach(currentRound -> {
+            Integer score = currentRound.getPinsKnockedAsInteger().stream().reduce(0, Integer::sum);
+
+            currentRound.setRoundScore(score);
+            Round lastRound = lastRoundAtomicReference.get();
+            Round lastButOneRound = lastButOneRoundAtomicReference.get();
+            if (lastRound == null) {
+                lastRoundAtomicReference.set(currentRound);
+                return;
+            }
+
+            if (currentRound.isSpare()) {
+                currentRound.setRoundScore(score + lastRound.getPinsKnockedAsInteger().get(0));
+            } else if (currentRound.isStrike() && lastRound.getPinsKnocked().size() == 3) {
+                currentRound.setRoundScore(
+                        score + lastRound.getPinsKnockedAsInteger().subList(0, 2).stream().reduce(0, Integer::sum));
+            } else if (currentRound.isStrike() && lastRound.getPinsKnocked().size() == 2) {
+                currentRound
+                        .setRoundScore(score + lastRound.getPinsKnockedAsInteger().stream().reduce(0, Integer::sum));
+            } else if (currentRound.isStrike() && lastRound.getPinsKnocked().size() == 1 && lastButOneRound != null) {
+                currentRound.setRoundScore(
+                        score + lastRound.getPinsKnockedAsInteger().get(0) + lastButOneRound.getPinsKnockedAsInteger()
+                                .get(0));
+            }
+
+            lastButOneRoundAtomicReference.set(lastRound);
+            lastRoundAtomicReference.set(currentRound);
+        });
+        Collections.reverse(rounds);
+    }
+
+    /**
+     * Update each {@link Round#getCumulativeScore()}
+     * @param rounds rounds to be updated
+     */
+    private void updateCumulativeScore(List<Round> rounds) {
+        AtomicReference<Round> lastRoundAtomicReference = new AtomicReference<>();
+        rounds.forEach(currentRound -> {
+            Round lastRound = lastRoundAtomicReference.get();
+            currentRound.setCumulativeScore(currentRound.getRoundScore());
+            if (lastRound != null) {
+                currentRound.setCumulativeScore(currentRound.getCumulativeScore() + lastRound.getCumulativeScore());
+            }
+            lastRoundAtomicReference.set(currentRound);
+        });
+    }
 }
