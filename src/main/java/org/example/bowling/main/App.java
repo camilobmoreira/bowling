@@ -7,8 +7,10 @@ import java.util.Map;
 
 import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
+import org.example.bowling.services.ScoreBoardService;
 import org.example.bowling.services.ScoreService;
 import org.example.bowling.utils.ArgumentsUtils;
+import org.example.bowling.services.impl.ScoreBoardServiceImpl;
 import org.example.bowling.services.impl.ScoreServiceImpl;
 import org.example.bowling.utils.FileUtils;
 import org.slf4j.Logger;
@@ -22,6 +24,7 @@ public class App {
 
     public static void main(String[] args) {
         ScoreService scoreService = new ScoreServiceImpl();
+        ScoreBoardService scoreBoardService = new ScoreBoardServiceImpl();
 
         ArgumentsUtils.validateArgumentsPrintHelp(args);
         Map<String, String> arguments = ArgumentsUtils.convertArgumentsToMap(args);
@@ -31,6 +34,7 @@ public class App {
             Map<Player, List<Round>> roundByPlayer = scoreService.parseRoundsByPlayer(lines, arguments.get(
                     ArgumentsUtils.VALUE_SEPARATOR));
             roundByPlayer.values().forEach(scoreService::updateRoundsSetScore);
+            scoreBoardService.printScoreBoard(roundByPlayer);
         } catch (IOException e) {
             e.printStackTrace();
         }
