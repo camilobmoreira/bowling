@@ -19,8 +19,8 @@ public class ArgumentsUtils {
     private static List<String> FILE_NAME_REGEX = Arrays.asList("-f", "--file");
     private static List<String> VALUE_SEPARATOR_REGEX = Arrays.asList("-s", "--separator");
 
-    private static String EXAMPLE_FILE_NAME = "Example.txt";
-    private static String DEFAULT_SEPARATOR = "\t";
+    public static String EXAMPLE_FILE_NAME = "Example.txt";
+    public static String DEFAULT_SEPARATOR = "\t";
 
     public static String FILE_NAME = "fileName";
     public static String VALUE_SEPARATOR = "valueSeparator";

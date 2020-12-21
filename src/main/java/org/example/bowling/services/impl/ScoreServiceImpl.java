@@ -34,8 +34,8 @@ public class ScoreServiceImpl implements ScoreService {
             roundByPlayer.putIfAbsent(currentPlayer, new ArrayList<>());
 
             // if the current player is not equals to the last player, we need to create a new round instead of updating
-            // the same one. Of if it had it's two chances already, unless it's the last one and it's a strike
-            if (!currentPlayer.equals(lastPlayer) || (lastRound.getPinsKnocked().size() > 2 && !lastRound.isStrike()
+            // the same one. Or if it had it's two chances already, unless it's the last one and it's a strike
+            if (!currentPlayer.equals(lastPlayer) || (lastRound.isStrike()
                     && roundByPlayer.get(currentPlayer).size() != 10)) {
                 lastRound = new Round();
                 lastPlayer = currentPlayer;
@@ -126,7 +126,7 @@ public class ScoreServiceImpl implements ScoreService {
     void validateRounds(Round round, String playerName, int frame) {
         List<Integer> pinsKnocked = round.getPinsKnockedAsInteger();
         Integer totalPins = pinsKnocked.stream().reduce(0, Integer::sum);
-        if (totalPins < 0 || (totalPins > 10 && (frame != 10 || !round.isStrike() || pinsKnocked.size() != 3))) {
+        if (totalPins < 0 || (totalPins > 10 && !(frame == 10 && round.isStrike()))) {
             throw new RuntimeException(String.format(
                     "The input file contains a invalid number of %s pins knocked in one round for player %s", totalPins,
                     playerName));
