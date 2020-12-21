@@ -14,10 +14,10 @@ import java.util.Map;
  */
 public class ArgumentsUtils {
 
-    private static List<String> HELP_REGEX = Arrays.asList("-h", "--help");
-    private static List<String> EXAMPLE_REGEX = Arrays.asList("-e", "--example");
-    private static List<String> FILE_NAME_REGEX = Arrays.asList("-f", "--file");
-    private static List<String> VALUE_SEPARATOR_REGEX = Arrays.asList("-s", "--separator");
+    private static final List<String> HELP_REGEX = Arrays.asList("-h", "--help");
+    private static final List<String> EXAMPLE_REGEX = Arrays.asList("-e", "--example");
+    private static final List<String> FILE_NAME_REGEX = Arrays.asList("-f", "--file");
+    private static final List<String> VALUE_SEPARATOR_REGEX = Arrays.asList("-s", "--separator");
 
     public static String EXAMPLE_FILE_NAME = "Example.txt";
     public static String DEFAULT_SEPARATOR = "\t";
@@ -40,13 +40,13 @@ public class ArgumentsUtils {
      */
     private static void printHelpMe() {
         System.out.println();
-        System.out.println("Usage: ");
-        System.out.println("\tmvn clean compile exec:java -Dexec.arguments=\"-f\\ Example.txt, -s \\t\"");//fixme
+        System.out.println("Usage:");
+        System.out.println("\tmvn exec:java -Dexec.arguments=\"-f\\ Example.txt, -s\\ \\t\"");
         System.out.println("\tSpaces and special characters should be espaped with \"\\\" as in the above example.");
         System.out.println("\tArguments should be separated by a comma.");
         System.out.println();
         System.out.println("\tIf you are specifying just the file name or path, you can omit the -f flag as below:");
-        System.out.println("\tmvn clean compile exec:java -Dexec.arguments=\"Example.txt\"");
+        System.out.println("\tmvn exec:java -Dexec.arguments=\"Example.txt\"");
         System.out.println();
         System.out.println("Options");
         System.out.println("\t-h, --help \t\t \t\t\t prints this message");

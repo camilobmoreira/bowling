@@ -9,24 +9,22 @@ import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
 import org.example.bowling.services.ScoreBoardService;
 import org.example.bowling.services.ScoreService;
-import org.example.bowling.utils.ArgumentsUtils;
 import org.example.bowling.services.impl.ScoreBoardServiceImpl;
 import org.example.bowling.services.impl.ScoreServiceImpl;
+import org.example.bowling.utils.ArgumentsUtils;
 import org.example.bowling.utils.FileUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 public class App {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
-
 
     public static void main(String[] args) {
         ScoreService scoreService = new ScoreServiceImpl();
         ScoreBoardService scoreBoardService = new ScoreBoardServiceImpl();
 
         ArgumentsUtils.validateArgumentsPrintHelp(args);
+        if (args.length == 0) {
+            return;
+        }
         Map<String, String> arguments = ArgumentsUtils.convertArgumentsToMap(args);
 
         try {

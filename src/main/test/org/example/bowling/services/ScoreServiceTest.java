@@ -23,7 +23,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ScoreServiceTest {
 
-    private ScoreService scoreService = new ScoreServiceImpl();
+    private final ScoreService scoreService = new ScoreServiceImpl();
 
     @Test
     public void parseRoundsByPlayerTest$AllZeros() {

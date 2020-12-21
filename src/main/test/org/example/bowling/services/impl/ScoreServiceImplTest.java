@@ -21,7 +21,7 @@ import org.junit.runners.JUnit4;
 @RunWith(JUnit4.class)
 public class ScoreServiceImplTest {
 
-    private ScoreServiceImpl scoreService = new ScoreServiceImpl();
+    private final ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
     @Test
     public void validateRoundsTest$simpleTestEverythingIsValid() {
