@@ -1,4 +1,4 @@
-package org.example.bowling.utils;
+package org.example.bowling.services.impl;
 
 
 import java.io.BufferedReader;
@@ -8,13 +8,15 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.example.bowling.services.FileService;
+
 
 /**
- * Class to help dealing with files
+ * {@link FileService}'s implementation
  *
  * @author camilo
  */
-public class FileUtils {
+public class FileServiceImpl implements FileService {
 
     /**
      * Opens a file and reads its content.
@@ -23,7 +25,7 @@ public class FileUtils {
      * doesn't exists
      * @throws IOException thrown if file can't be read
      */
-    public static List<String> openFileAndReadLines(String filePath) throws IOException {
+    public List<String> openFileAndReadLines(String filePath) throws IOException {
         List<String> lines = new LinkedList<>();
         File file = new File(filePath);
         if (!file.exists()) {
