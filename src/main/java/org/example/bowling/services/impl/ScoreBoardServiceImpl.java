@@ -3,11 +3,14 @@ package org.example.bowling.services.impl;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
 import org.example.bowling.services.ScoreBoardService;
+
+import com.google.common.annotations.VisibleForTesting;
 
 
 /**
@@ -32,13 +35,15 @@ public class ScoreBoardServiceImpl implements ScoreBoardService {
      * @param rounds list of rounds
      * @return message line for all the {@link Round#getPinsKnocked()}
      */
-    private String getPinfallsMessageLine(List<Round> rounds) {
+    @VisibleForTesting
+    String getPinfallsMessageLine(List<Round> rounds) {
         StringBuilder stringBuilder = new StringBuilder();
         rounds.forEach(round -> {
             if (round.isStrike() && round.getPinsKnocked().size() > 1) {
                 List<Integer> pinsKnockedAsInteger = round.getPinsKnockedAsInteger();
-                stringBuilder.append("X\t")
-                        .append(StringUtils.join(pinsKnockedAsInteger.subList(1, pinsKnockedAsInteger.size()), "\t"));
+                stringBuilder.append(StringUtils
+                        .join(pinsKnockedAsInteger.stream().map(n -> n == 10 ? "X" : n).collect(Collectors.toList()),
+                                "\t"));
             } else if (round.isStrike()) {
                 stringBuilder.append("\tX\t");
             } else if (round.isSpare()) {
@@ -55,7 +60,8 @@ public class ScoreBoardServiceImpl implements ScoreBoardService {
      * @param rounds list of rounds
      * @return message line for all the {@link Round#getCumulativeScore()}
      */
-    private String getScoreMessageLine(List<Round> rounds) {
+    @VisibleForTesting
+    String getScoreMessageLine(List<Round> rounds) {
         StringBuilder stringBuilder = new StringBuilder();
         rounds.forEach(round -> {
             stringBuilder.append(StringUtils.join(round.getCumulativeScore(), "\t\t"));
