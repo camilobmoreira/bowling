@@ -7,6 +7,7 @@ import java.util.List;
 import org.example.bowling.services.impl.FileServiceImpl;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.function.Executable;
 
 
 /**
@@ -28,11 +29,12 @@ public class FileServiceTest {
     }
 
     @Test
-    public void openFileAndReadLines$nonExistentFile() throws IOException {
-        List<String> lines = this.fileService.openFileAndReadLines("Whatever.txt");
-        Assertions.assertAll(
-                () -> Assertions.assertNotNull(lines),
-                () -> Assertions.assertEquals(0, lines.size())
-        );
+    public void openFileAndReadLines$nonExistentFile() {
+        try {
+            this.fileService.openFileAndReadLines("Whatever.txt");
+            Assertions.fail();
+        } catch (IOException e) {
+            Assertions.assertEquals("File Whatever.txt does not exist.", e.getMessage());
+        }
     }
 }

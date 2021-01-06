@@ -26,11 +26,11 @@ public class FileServiceImpl implements FileService {
      * @throws IOException thrown if file can't be read
      */
     public List<String> openFileAndReadLines(String filePath) throws IOException {
-        List<String> lines = new LinkedList<>();
         File file = new File(filePath);
         if (!file.exists()) {
-            return lines;
+            throw new IOException(String.format("File %s does not exist.", filePath));
         }
+        List<String> lines = new LinkedList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
         while ((line = reader.readLine()) != null) {

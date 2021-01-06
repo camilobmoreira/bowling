@@ -4,6 +4,8 @@ package org.example.bowling.services;
 import java.util.List;
 import java.util.Map;
 
+import org.example.bowling.exception.InvalidPinsKnockedException;
+import org.example.bowling.exception.MoreThanTenThrowsException;
 import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
 
@@ -23,7 +25,8 @@ public interface ScoreService {
      * @param separator value separator
      * @return {@link Map} of {@link List} of {@link Round} by {@link Player}
      */
-    Map<Player, List<Round>> parseRoundsByPlayer(List<String> lines, String separator);
+    Map<Player, List<Round>> parseRoundsByPlayer(List<String> lines, String separator)
+            throws InvalidPinsKnockedException, MoreThanTenThrowsException;
 
     /**
      * Given a {@link List} of {@link Round}, it will update each elemnt {@link Round#getRoundScore()} and

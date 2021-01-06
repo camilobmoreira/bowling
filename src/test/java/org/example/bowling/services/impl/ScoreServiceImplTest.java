@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.example.bowling.exception.InvalidPinsKnockedException;
+import org.example.bowling.exception.MoreThanTenThrowsException;
 import org.example.bowling.model.Round;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +26,8 @@ public class ScoreServiceImplTest {
     private final ScoreServiceImpl scoreService = new ScoreServiceImpl();
 
     @Test
-    public void validateRoundsTest$simpleTestEverythingIsValid() {
+    public void validateRoundsTest$simpleTestEverythingIsValid()
+            throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         Round round = new Round();
         round.setPinsKnocked(Arrays.asList("5", "5"));
         this.scoreService.validateRounds(round, "playerName", 1);
@@ -34,18 +37,19 @@ public class ScoreServiceImplTest {
     public void validateRoundsTest$simpleTestInvalidKnockedPins11() {
         Round round = new Round();
         round.setPinsKnocked(Arrays.asList("6", "5"));
-        Assertions.assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
+        Assertions.assertThrows(InvalidPinsKnockedException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
     }
 
     @Test
     public void validateRoundsTest$simpleTestInvalidKnockedPinsMinus1() {
         Round round = new Round();
         round.setPinsKnocked(Collections.singletonList("-1"));
-        Assertions.assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
+        Assertions.assertThrows(InvalidPinsKnockedException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
     }
 
     @Test
-    public void validateRoundsTest$simpleTestMoreThan10PinsKnockedStrikeOnLastFrame() {
+    public void validateRoundsTest$simpleTestMoreThan10PinsKnockedStrikeOnLastFrame()
+            throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         Round round = new Round();
         round.setPinsKnocked(Arrays.asList("10", "1", "1"));
         this.scoreService.validateRounds(round, "playerName", 10);
@@ -55,7 +59,7 @@ public class ScoreServiceImplTest {
     public void validateRoundsTest$simpleTestMoreThan10PinsKnockedStrikeNotLastFrame() {
         Round round = new Round();
         round.setPinsKnocked(Arrays.asList("10", "1", "1"));
-        Assertions.assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
+        Assertions.assertThrows(InvalidPinsKnockedException.class, () -> this.scoreService.validateRounds(round, "playerName", 1));
     }
 
     @Test
@@ -63,7 +67,7 @@ public class ScoreServiceImplTest {
         Round round = new Round();
         round.setPinsKnocked(Collections.singletonList("1"));
         Assertions
-                .assertThrows(RuntimeException.class, () -> this.scoreService.validateRounds(round, "playerName", 11));
+                .assertThrows(MoreThanTenThrowsException.class, () -> this.scoreService.validateRounds(round, "playerName", 11));
     }
 
     @Test

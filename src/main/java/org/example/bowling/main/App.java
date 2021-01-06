@@ -5,15 +5,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.example.bowling.exception.InvalidPinsKnockedException;
+import org.example.bowling.exception.MoreThanTenThrowsException;
 import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
+import org.example.bowling.services.FileService;
 import org.example.bowling.services.ScoreBoardService;
 import org.example.bowling.services.ScoreService;
 import org.example.bowling.services.impl.FileServiceImpl;
 import org.example.bowling.services.impl.ScoreBoardServiceImpl;
 import org.example.bowling.services.impl.ScoreServiceImpl;
 import org.example.bowling.utils.ArgumentsUtils;
-import org.example.bowling.services.FileService;
 
 
 public class App {
@@ -35,8 +37,8 @@ public class App {
                     ArgumentsUtils.VALUE_SEPARATOR));
             roundByPlayer.values().forEach(scoreService::updateRoundsSetScore);
             scoreBoardService.printScoreBoard(roundByPlayer);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException | InvalidPinsKnockedException | MoreThanTenThrowsException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

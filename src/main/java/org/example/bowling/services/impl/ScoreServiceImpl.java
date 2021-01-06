@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.example.bowling.exception.InvalidPinsKnockedException;
+import org.example.bowling.exception.MoreThanTenThrowsException;
 import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
 import org.example.bowling.services.ScoreService;
@@ -23,7 +25,8 @@ import com.google.common.annotations.VisibleForTesting;
 public class ScoreServiceImpl implements ScoreService {
 
     @Override
-    public Map<Player, List<Round>> parseRoundsByPlayer(List<String> lines, String separator) {
+    public Map<Player, List<Round>> parseRoundsByPlayer(List<String> lines, String separator)
+            throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         Map<Player, List<Round>> roundByPlayer = new LinkedHashMap<>();
         Player lastPlayer = null;
         Round lastRound = null;
@@ -123,15 +126,16 @@ public class ScoreServiceImpl implements ScoreService {
      * @param frame number of frame
      */
     @VisibleForTesting
-    void validateRounds(Round round, String playerName, int frame) {
+    void validateRounds(Round round, String playerName, int frame)
+            throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         List<Integer> pinsKnocked = round.getPinsKnockedAsInteger();
         Integer totalPins = pinsKnocked.stream().reduce(0, Integer::sum);
         if (totalPins < 0 || (totalPins > 10 && !(frame == 10 && round.isStrike()))) {
-            throw new RuntimeException(String.format(
+            throw new InvalidPinsKnockedException(String.format(
                     "The input file contains a invalid number of %s pins knocked in one round for player %s", totalPins,
                     playerName));
         } else if (frame > 10) {
-            throw new RuntimeException(String.format(
+            throw new MoreThanTenThrowsException(String.format(
                     "The input file contains more than 10 throws for player %s", playerName));
         }
     }

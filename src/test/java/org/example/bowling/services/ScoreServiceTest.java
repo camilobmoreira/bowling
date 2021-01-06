@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.example.bowling.exception.InvalidPinsKnockedException;
+import org.example.bowling.exception.MoreThanTenThrowsException;
 import org.example.bowling.model.Player;
 import org.example.bowling.model.Round;
 import org.example.bowling.services.impl.ScoreServiceImpl;
@@ -26,7 +28,7 @@ public class ScoreServiceTest {
     private final ScoreService scoreService = new ScoreServiceImpl();
 
     @Test
-    public void parseRoundsByPlayerTest$AllZeros() {
+    public void parseRoundsByPlayerTest$AllZeros() throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         List<String> lines = Arrays.asList(
                 "Joe\t0",
                 "Joe\t0",
@@ -61,7 +63,7 @@ public class ScoreServiceTest {
     }
 
     @Test
-    public void parseRoundsByPlayerTest$AllTens() {
+    public void parseRoundsByPlayerTest$AllTens() throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         List<String> lines = Arrays.asList(
                 "Joe\t10",
                 "Joe\t10",
@@ -87,7 +89,8 @@ public class ScoreServiceTest {
     }
 
     @Test
-    public void parseRoundsByPlayerTest$ExampleDotTxt() {
+    public void parseRoundsByPlayerTest$ExampleDotTxt()
+            throws InvalidPinsKnockedException, MoreThanTenThrowsException {
         List<String> lines = Arrays.asList(
                 "Jeff\t10",
                 "John\t3",
